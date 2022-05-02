@@ -3,9 +3,9 @@ package com.company;
 
 import java.io.*;
 import java.net.*;
-import java.net.http.HttpResponse;
+
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+
 
 
 public class Client extends Thread{
@@ -16,7 +16,7 @@ public class Client extends Thread{
     private String host=null;//host that we make request
     private int port=0;//port that we connect
     private BufferedReader buffer;
-
+    private String version;
     public Client(Socket client){
         this.client=client;
 
@@ -44,25 +44,19 @@ public class Client extends Thread{
                 client.close();
                 this.interrupt();
             }
-            String version;
+
             if((version=checkIfSecure(rawrequest,size)) != null){
                 String connectionOk=(version+" "+Utils.PROXY_CONNECTION_OK);
                 clientOut.write(connectionOk.getBytes(StandardCharsets.UTF_8));
-                Proxy proxy=new Proxy(Proxy.Type.HTTP,new InetSocketAddress(Utils.PROXY_HOST,Utils.PROXY_PORT));
-                server=new Socket(proxy);
-                server.bind(new InetSocketAddress(0));
-                server.setSoTimeout(5000);
-                server.connect(new InetSocketAddress(host,port));
+                server=new Socket(host,port);
+
                 serverIn=server.getInputStream();
                 serverOut=server.getOutputStream();
 
             }else{
                 byte[] request=parseRequest(rawrequest,size);
-                Proxy proxy=new Proxy(Proxy.Type.HTTP,new InetSocketAddress(Utils.PROXY_HOST,Utils.PROXY_PORT));
-                server=new Socket(proxy);
-                server.bind(new InetSocketAddress(0));
-                server.setSoTimeout(5000);
-                server.connect(new InetSocketAddress(host,port));
+                server=new Socket(host,port);
+
                 serverIn=server.getInputStream();
                 serverOut=server.getOutputStream();
                 serverOut.write(request);
@@ -96,10 +90,19 @@ public class Client extends Thread{
                      size = clientIn.read(request);
 
                     if (size > 0) {
-                        String req = new String(request,0,size);
-                        System.out.println("Req:" + req);
-                        serverOut.write(request,0,size);
-                        serverOut.flush();
+                        if(version == null){
+                            byte[] parsedReq=parseRequest(request,size);
+                            String req = new String(parsedReq,0,parsedReq.length);
+                            System.out.println("Req:" + req);
+                            serverOut.write(parsedReq,0,parsedReq.length);
+                            serverOut.flush();
+                        }else{
+                            String req = new String(request,0,size);
+                            System.out.println("Req:" + req);
+                            serverOut.write(request,0,size);
+                            serverOut.flush();
+                        }
+
                     }
                     if (size < 0) {
                         client.shutdownInput();

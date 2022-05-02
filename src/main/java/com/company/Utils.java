@@ -1,9 +1,9 @@
 package com.company;
 
 public class Utils {
-    public static int SERVER_PORT_TO_LISTEN=8080;
-    public static String PROXY_HOST="26.26.26.1";
-    public static int PROXY_PORT=8080;
+    public static int SERVER_PORT_TO_LISTEN=8888;
+    public static String PROXY_HOST="194.163.43.216";
+    public static int PROXY_PORT=3128;
     public static String USER_AGENT="Efbiay/1.0";
     public static String CRLF="\r\n";
     public static String PROXY_CONNECTION_OK="200 Connection established"+CRLF+

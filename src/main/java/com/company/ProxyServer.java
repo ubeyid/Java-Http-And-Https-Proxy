@@ -1,5 +1,7 @@
 package com.company;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +26,11 @@ public class ProxyServer implements Runnable,OnConnectionEventListener{
 
     public void listen(){
         try {
-            ServerSocket server=new ServerSocket(port);
+
+
+
+           // ServerSocket server= SSLServerSocketFactory.getDefault().createServerSocket(Utils.SERVER_PORT_TO_LISTEN);
+            ServerSocket server= new ServerSocket(Utils.SERVER_PORT_TO_LISTEN);
             onConnectionEstablished(server);
 
             while(server.isBound() && !server.isClosed()){
