@@ -1,5 +1,6 @@
 # Java-Http-And-Https-Proxy
-This project route your traffic to another proxy
-You are free to not use proxy just disable proxy adress
+Simply route your http and https traffic as a proxy server
+
 This project created with intelij idea on windows
+
 Tested only on windows
